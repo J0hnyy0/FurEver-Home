@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FurEver Home | Pet Adoption</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="CSS/homepage.css">
+</head>
+<body>
+
+<header>
+    <div class="logo-title" onclick="scrollToTop()">
+        <img src="image/logo.png" alt="FurEver Home Logo">
+        <span>FurEver Home</span>
+    </div>
+    <nav>
+        <a href="#" onclick="event.preventDefault();">Home</a>
+        <a href="#pets" onclick="event.preventDefault(); scrollToPets()">Adopt</a>
+        <a href="#mission" onclick="event.preventDefault(); scrollToMission()">About</a>
+        <a href="#" onclick="event.preventDefault(); showAlert('Contact')">Contact</a>
+    </nav>
+    <div class="header-buttons">
+        <a href="#pets" class="adopt-btn" onclick="event.preventDefault(); scrollToPets()">Adopt</a>
+        <a href="surrender.html" class="surrender-btn">Surrender</a>
+        
+        <!-- Sign In Button (shown when not logged in) -->
+        <a id="signinBtn" href="register.html" class="signin-btn">Sign In</a>
+        
+        <!-- Profile Menu (shown when logged in) -->
+        <div id="profileMenuContainer" class="profile-menu-container hidden">
+                <button class="profile-btn" onclick="toggleProfileMenu(event)">
+                <div class="profile-avatar" id="profileAvatar">U</div>
+                <span id="profileName">Profile</span>
+                </button>
+                
+                <div id="profileDropdown" class="profile-dropdown">
+                    <div class="profile-user-info">
+                        <div id="userName">User</div>
+                        <div class="profile-user-email" id="userEmail">user@email.com</div>
+                    </div>
+                    <div class="profile-dropdown-item" onclick="goToAdoptedPets()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        <span>My Adopted Pets</span>
+                    </div>
+                    <div class="profile-dropdown-item" onclick="goToAdoptionRequests()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                        <span>Adoption Requests</span>
+                    </div>
+                    <div class="profile-dropdown-item" onclick="goToEditProfile()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                        </svg>
+                        <span>Edit Profile</span>
+                    </div>
+                    <div class="profile-dropdown-item logout" onclick="event.stopPropagation(); showLogoutModal()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                        <span>Logout</span>
+                    </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="hero-carousel">
+        <!-- Slide 1 -->
+        <div class="hero-slide slide-1 active">
+            <div class="hero-content">
+                <h2>Find Your Forever Friend</h2>
+                <p>Every animal deserves a loving home. Meet the pets waiting to become part of your family.</p>
+                <a href="#pets" class="hero-adopt" onclick="event.preventDefault(); scrollToPets()">Browse Pets</a>
+            </div>
+        </div>
+
+        <!-- Slide 2 -->
+        <div class="hero-slide slide-2">
+            <div class="hero-content">
+                <h2>Make a Difference Today</h2>
+                <p>Adoption saves lives. Give a rescue pet the second chance they deserve.</p>
+                <a href="#pets" class="hero-adopt" onclick="event.preventDefault(); scrollToPets()">Meet Our Pets</a>
+            </div>
+        </div>
+
+        <!-- Slide 3 -->
+        <div class="hero-slide slide-3">
+            <div class="hero-content">
+                <h2>Love Knows No Breed</h2>
+                <p>From playful puppies to gentle seniors, find your perfect companion today.</p>
+                <a href="#pets" class="hero-adopt" onclick="event.preventDefault(); scrollToPets()">Start Your Journey</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Carousel Controls -->
+    <button class="carousel-arrow carousel-prev">‹</button>
+    <button class="carousel-arrow carousel-next">›</button>
+
+    <!-- Carousel Dots -->
+    <div class="carousel-dots">
+        <span class="carousel-dot active"></span>
+        <span class="carousel-dot"></span>
+        <span class="carousel-dot"></span>
+    </div>
+</section>
+
+<section class="pets" id="pets">
+    <h3>Available for Adoption</h3>
+    <p>These companions are ready for a new chapter. Each one has a unique story and plenty of love to share.</p>
+
+    <!-- Category filters -->
+    <div class="category-filters">
+        <button class="filter-btn active" data-filter="all">All Pets</button>
+        <button class="filter-btn" data-filter="dog">Dogs</button>
+        <button class="filter-btn" data-filter="cat">Cats</button>
+    </div>
+
+    <div class="pet-grid" id="petGrid">
+        <!-- Pets will be dynamically loaded here -->
+        <div class="no-pets-message">
+            <p>No pets available for adoption at the moment. Check back soon!</p> 
+        </div>
+    </div>
+</section>
+
+<footer>
+    <p>© 2026 FurEver Home Pet Adoption</p>
+    <p>Every pet deserves a loving home</p>
+</footer>
+
+<!-- Logout Confirmation Modal -->
+<div id="logoutConfirmModal" class="modal logout-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Confirm Logout</h2>
+            <button class="close-modal" onclick="closeLogoutModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure you want to logout from your account?</p>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-btn-cancel" onclick="closeLogoutModal()">Cancel</button>
+            <button class="modal-btn-logout" onclick="confirmLogout()">Logout</button>
+        </div>
+    </div>
+</div>
+
+<!-- Firebase Config Script - Load this BEFORE homepage.js -->
+<script src="js/config.js"></script>
+
+<!-- Firebase App (the core Firebase SDK) -->
+<script type="module" src="js/homepage.js"></script>
+
+</body> 
+</html>
