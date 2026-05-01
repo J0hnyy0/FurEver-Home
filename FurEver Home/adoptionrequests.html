@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Adoption Requests | FurEver Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="CSS/adoptionrequests.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.38.0"></script>
+</head>
+<body>
+
+<header>
+    <div class="logo-title" onclick="window.location.href='homepage.html'">
+        <img src="image/logo.png" alt="FurEver Home Logo">
+        <span>FurEver Home</span>
+    </div>
+    <div class="header-buttons">
+        <!-- Notification Bell -->
+        <div id="notificationBellContainer" class="notif-bell-container" style="display:none;">
+            <button class="notif-bell-btn" onclick="toggleNotifPanel()" title="Notifications">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                </svg>
+                <span class="notif-badge" id="notifBadge" style="display:none;">0</span>
+            </button>
+        </div>
+        <a href="homepage.html#pets" class="adopt-btn">Adopt</a>
+        <a href="surrender.html" class="surrender-btn">Surrender</a>
+        
+        <!-- Profile Menu -->
+        <div id="profileMenuContainer" class="profile-menu-container">
+            <button class="profile-btn" onclick="toggleProfileMenu()">
+                <div class="profile-avatar" id="profileAvatar">U</div>
+                <span id="profileName">Profile</span>
+            </button>
+            <div id="profileDropdown" class="profile-dropdown">
+                <div class="profile-user-info">
+                    <div id="userName">User</div>
+                    <div class="profile-user-email" id="userEmail"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="740107110634110c15190418115a171b19">[email&#160;protected]</a></div>
+                </div>
+                <div class="profile-dropdown-item" onclick="goToAdoptedPets()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    <span>My Adopted Pets</span>
+                </div>
+                <div class="profile-dropdown-item" onclick="goToAdoptionRequests()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                    <span>Adoption Requests</span>
+                </div>
+                <div class="profile-dropdown-item" onclick="goToEditProfile()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                    </svg>
+                    <span>Edit Profile</span>
+                </div>
+                <div class="profile-dropdown-item" onclick="event.stopPropagation(); showDonateModal()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                    </svg>
+                    <span>Donate via GCash</span>
+                </div>
+                <div class="profile-dropdown-item logout" onclick="event.stopPropagation(); showLogoutModal()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    <span>Logout</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<section class="main-content">
+    <div class="page-header">
+        <h1>My Adoption Requests</h1>
+        <p>Track the status of your adoption applications</p>
+    </div>
+
+    <!-- Status Filter Tabs -->
+    <div class="status-tabs">
+        <button class="status-tab active" data-status="all" onclick="filterByStatus('all')">
+            All Requests
+            <span class="tab-count" id="countAll">0</span>
+        </button>
+        <button class="status-tab" data-status="pending" onclick="filterByStatus('pending')">
+            Pending
+            <span class="tab-count" id="countPending">0</span>
+        </button>
+        <button class="status-tab" data-status="approved" onclick="filterByStatus('approved')">
+            Approved
+            <span class="tab-count" id="countApproved">0</span>
+        </button>
+        <button class="status-tab" data-status="rejected" onclick="filterByStatus('rejected')">
+            Rejected
+            <span class="tab-count" id="countRejected">0</span>
+        </button>
+    </div>
+
+    <div class="requests-container" id="requestsContainer">
+        <!-- Loading state -->
+        <div class="loading-state">
+            <div class="spinner"></div>
+            <p>Loading your adoption requests...</p>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <p>© 2026 FurEver Home Pet Adoption</p>
+    <p>Every pet deserves a loving home</p>
+</footer>
+
+
+<!-- GCash Donation Modal -->
+<div id="donateModal" class="modal donate-modal">
+    <div class="modal-content donate-modal-content">
+        <div class="donate-modal-header">
+            <div class="donate-header-logo">
+                <div class="gcash-icon">G</div>
+                <div class="donate-header-text">
+                    <strong>GCash Donation</strong>
+                    <span>Scan to donate instantly</span>
+                </div>
+            </div>
+            <button class="close-modal donate-close" onclick="closeDonateModal()">&times;</button>
+        </div>
+        <div class="donate-modal-body">
+            <p class="donate-intro">Every peso counts! Your donation helps us feed, shelter, and care for animals waiting for their forever home. 🐾</p>
+            <div class="donate-qr-wrapper">
+                <div class="donate-qr-box">
+                    <svg width="90" height="90" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="5" y="5" width="35" height="35" rx="3" stroke="#0070FF" stroke-width="3" fill="none"/>
+                        <rect x="13" y="13" width="19" height="19" rx="1" fill="#0070FF"/>
+                        <rect x="60" y="5" width="35" height="35" rx="3" stroke="#0070FF" stroke-width="3" fill="none"/>
+                        <rect x="68" y="13" width="19" height="19" rx="1" fill="#0070FF"/>
+                        <rect x="5" y="60" width="35" height="35" rx="3" stroke="#0070FF" stroke-width="3" fill="none"/>
+                        <rect x="13" y="68" width="19" height="19" rx="1" fill="#0070FF"/>
+                        <rect x="45" y="5" width="7" height="7" rx="1" fill="#0070FF"/>
+                        <rect x="55" y="5" width="7" height="7" rx="1" fill="#0070FF"/>
+                        <rect x="45" y="15" width="7" height="7" rx="1" fill="#0070FF"/>
+                        <rect x="45" y="25" width="7" height="7" rx="1" fill="#0070FF"/>
+                        <rect x="55" y="25" width="7" height="7" rx="1" fill="#0070FF"/>
+                        <rect x="5" y="45" width="7" height="7" rx="1" fill="#0070FF"/>
+                        <rect x="15" y="45" width="7" height="7" rx="1" fill="#0070FF"/>
+                        <rect x="25" y="45" width="7" height="7" rx="1" fill="#0070FF"/>
+                        <rect x="35" y="45" width="7" height="7" rx="1" fill="#0070FF"/>
+                        <rect x="45" y="45" width="7" height="7" rx="1" fill="#0070FF"/>
+                        <rect x="55" y="45" width="7" height="7" rx="1" fill="#0070FF"/>
+                        <rect x="65" y="45" width="7" height="7" rx="1" fill="#0070FF"/>
+                        <rect x="75" y="45" width="7" height="7" rx="1" fill="#0070FF"/>
+                        <rect x="85" y="45" width="7" height="7" rx="1" fill="#0070FF"/>
+                        <rect x="45" y="55" width="7" height="7" rx="1" fill="#0070FF"/>
+                        <rect x="65" y="55" width="7" height="7" rx="1" fill="#0070FF"/>
+                        <rect x="85" y="55" width="7" height="7" rx="1" fill="#0070FF"/>
+                        <rect x="55" y="65" width="7" height="7" rx="1" fill="#0070FF"/>
+                        <rect x="75" y="65" width="7" height="7" rx="1" fill="#0070FF"/>
+                        <rect x="45" y="75" width="7" height="7" rx="1" fill="#0070FF"/>
+                        <rect x="65" y="75" width="7" height="7" rx="1" fill="#0070FF"/>
+                        <rect x="85" y="75" width="7" height="7" rx="1" fill="#0070FF"/>
+                        <rect x="55" y="85" width="7" height="7" rx="1" fill="#0070FF"/>
+                        <rect x="75" y="85" width="7" height="7" rx="1" fill="#0070FF"/>
+                        <rect x="85" y="85" width="7" height="7" rx="1" fill="#0070FF"/>
+                    </svg>
+                    <p class="donate-qr-label">Your QR Code Here</p>
+                </div>
+            </div>
+            <div class="donate-account-info">
+                <div class="donate-account-row">
+                    <span class="donate-account-key">Account Name</span>
+                    <span class="donate-account-val">FurEver Home PH</span>
+                </div>
+                <div class="donate-account-row">
+                    <span class="donate-account-key">GCash Number</span>
+                    <span class="donate-account-val">09XX-XXX-XXXX</span>
+                </div>
+            </div>
+            <p class="donate-amounts-label">Suggested donation amounts</p>
+            <div class="donate-amounts">
+                <button class="donate-amount-btn" onclick="selectDonationAmount(this)">&#8369;50</button>
+                <button class="donate-amount-btn" onclick="selectDonationAmount(this)">&#8369;100</button>
+                <button class="donate-amount-btn" onclick="selectDonationAmount(this)">&#8369;250</button>
+                <button class="donate-amount-btn" onclick="selectDonationAmount(this)">&#8369;500</button>
+            </div>
+            <div class="donate-disclaimer">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8B6F47" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+                <span>All donations go directly to shelter operations &amp; pet care.</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Logout Confirmation Modal -->
+<div id="logoutConfirmModal" class="modal logout-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Confirm Logout</h2>
+            <button class="close-modal" onclick="closeLogoutModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure you want to logout from your account?</p>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-btn-cancel" onclick="closeLogoutModal()">Cancel</button>
+            <button class="modal-btn-logout" onclick="confirmLogout()">Logout</button>
+        </div>
+    </div>
+</div>
+
+<!-- Cancel Request Confirmation Modal -->
+<div id="cancelRequestModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Cancel Adoption Request</h2>
+            <button class="close-modal" onclick="closeCancelModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+
+
+<!-- Adoption Notification Modal -->
+<div id="adoptionNotifModal" class="modal adoption-notif-modal">
+    <div class="adoption-notif-content">
+        <div class="adoption-notif-header">
+            <div class="adoption-notif-title">
+                <span class="adoption-notif-bell-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                </span>
+                <strong>Adoption Requests</strong>
+            </div>
+            <button class="adoption-notif-close" onclick="closeAdoptionNotif()">&times;</button>
+        </div>
+        <p class="adoption-notif-sub" id="adoptionNotifSub">Loading...</p>
+        <div class="adoption-notif-list" id="adoptionNotifList"></div>
+        <button class="adoption-notif-view-btn" onclick="goToAdoptionRequests(); closeAdoptionNotif();">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+            </svg>
+            View All Requests
+        </button>
+    </div>
+</div>
+<!-- IMPORTANT: Load config.js BEFORE adoptionrequests.js -->
+<script src="JS/config.js"></script>
+<script type="module" src="JS/adoptionrequests.js"></script>
+</body>
+</html>
